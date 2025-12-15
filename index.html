@@ -83,14 +83,47 @@
       background: white;
       padding: 10px;
     }
+    .header-actions {
+  margin-top: 24px;
+}
+
+.sites-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #133a63;
+  background: #ffffff;
+  border: 2px solid rgba(255,255,255,0.35);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.25);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.sites-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+  background: #f2f7ff;
+}
+
   </style>
 </head>
 <body>
-  <header>
-    <!-- اللوغو من نفس المجلد -->
-    <img src="logo.png" alt="Hyper Reach Logo" class="logo" />
-    <h1>Hyper Reach</h1>
-    <p>Software • Electrical Systems • Smart Technology • AI Solutions</p>
+ <header>
+  <img src="logo.png" alt="Hyper Reach Logo" class="logo" />
+  <h1>Hyper Reach</h1>
+  <p>Electrical Systems • Smart Technology • AI Solutions</p>
+
+  <div class="header-actions">
+    <a href="technicians.html" class="sites-btn">📍 Sites Location</a>
+  </div>
+</header>
+
+</div>
+
   </header>
 
   <section class="about">
