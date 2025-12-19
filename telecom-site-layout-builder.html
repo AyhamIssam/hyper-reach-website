@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Telecom Site Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root{
+    --bg:#0f172a;
+    --card:#020617;
+    --border:#1e293b;
+    --muted:#94a3b8;
+    --primary:#2563eb;
+    --secondary:#334155;
+    --danger:#dc2626;
+    --input:#334155;
+  }
+  body{
+    font-family: system-ui, Arial;
+    background:var(--bg);
+    color:#e5e7eb;
+    margin:0;
+    padding:14px;
+  }
+  h1{font-size:20px;margin:0 0 12px}
+  h2{font-size:16px;margin:0 0 10px}
+  h3{font-size:15px;margin:0 0 10px}
+  h4{font-size:14px;margin:0 0 8px}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:14px;
+  }
+  label{
+    font-size:13px;
+    color:#e5e7eb;
+    opacity:.9;
+    display:block;
+    margin-top:10px;
+  }
+  select,input,textarea{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    font-size:16px;
+    border-radius:12px;
+    border:1px solid var(--input);
+    background:var(--card);
+    color:#e5e7eb;
+    margin-top:6px;
+    outline:none;
+  }
+  textarea{min-height:220px}
+  .btnrow{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  button{
+    flex:1 1 140px;
+    padding:12px;
+    font-size:15px;
+    border-radius:12px;
+    border:none;
+    cursor:pointer;
+    background:var(--primary);
+    color:white;
+  }
+  button.secondary{background:var(--secondary)}
+  button.danger{background:var(--danger)}
+  .block{
+    border-left:4px solid var(--primary);
+    padding-left:12px;
+    margin-top:12px;
+  }
+  .small{font-size:12px;color:var(--muted)}
+  .checkbox-group label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+    font-size:14px;
+    color:#e5e7eb;
+    opacity:1;
+  }
+  .checkbox-group input{width:auto;margin:0}
+  .inline-actions{
+    margin-top:10px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .inline-actions button{flex:1 1 120px}
+  .pill{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:8px;
+  }
+  .back-hub{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+  padding:10px 16px;
+  border-radius:14px;
+  background:#1e293b;
+  color:#e5e7eb;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  border:1px solid #334155;
+}
+
+.back-hub:hover{
+  background:#334155;
+}
+</style>
+</head>
+
+<body>
+<a href="survey-hub.html" class="back-hub">
+  ⬅️ الرجوع إلى نماذج Survey
+</a>
+
+<h1>📡 Telecom Site Builder</h1>
+
+<!-- SITE -->
+<div class="card">
+  <h2>1) Site Structure</h2>
+
+  <label>Site Type</label>
+  <select id="siteType">
+    <option value="">Select</option>
+    <option value="tower">Tower</option>
+    <option value="masts">Masts</option>
+  </select>
+
+  <div id="towerWrap" style="display:none">
+    <label>Tower Height (m)</label>
+    <input type="number" id="towerHeight" inputmode="decimal" placeholder="e.g., 30">
+  </div>
+
+  <div id="mastWrap" style="display:none">
+    <label>Number of Masts</label>
+    <select id="mastCount">
+      <option value="">Select</option>
+      <option>1</option><option>2</option><option>3</option><option>4</option>
+    </select>
+  </div>
+
+  <div class="small" style="margin-top:10px">
+    Tower = 4 Legs (1–4). Masts = A/B/C/D based on count.
+  </div>
+</div>
+
+<!-- STRUCTURES -->
+<div class="card" id="structuresCard" style="display:none">
+  <h2>2) Legs / Masts</h2>
+  <div id="structures"></div>
+</div>
+
+<!-- OUTPUT -->
+<div class="card">
+  <h2>3) WhatsApp Text</h2>
+  <div class="btnrow">
+    <button id="genBtn" type="button">Generate Text</button>
+    <button id="copyBtn" type="button" class="secondary">Copy</button>
+    <button id="clearBtn" type="button" class="secondary">Clear All</button>
+  </div>
+  <label>Output</label>
+  <textarea id="output" readonly placeholder="Press Generate Text"></textarea>
+  <div id="toast" class="small" style="margin-top:8px"></div>
+</div>
+
+<script>
+/** ====== DROPDOWN VALUES ====== **/
+const ANTENNA_TYPES = [
+  "2-ports",
+  "4-ports",
+  "6-ports",
+  "TDD Antenna",
+  "10-Ports",
+  "12-Ports",
+  "14-Ports"
+];
+
+const RRU_MODELS = ["3839", "3939", "5909"];
+
+const MW_DIAMETERS = ["0.3", "0.6", "0.8", "1.2"];
+
+/** ====== ELEMENTS ====== **/
+const siteTypeEl = document.getElementById("siteType");
+const towerWrap = document.getElementById("towerWrap");
+const mastWrap = document.getElementById("mastWrap");
+const mastCountEl = document.getElementById("mastCount");
+const towerHeightEl = document.getElementById("towerHeight");
+
+const structuresCard = document.getElementById("structuresCard");
+const structuresEl = document.getElementById("structures");
+
+const outputEl = document.getElementById("output");
+const toastEl = document.getElementById("toast");
+
+document.getElementById("genBtn").addEventListener("click", generateText);
+document.getElementById("copyBtn").addEventListener("click", copyText);
+document.getElementById("clearBtn").addEventListener("click", clearAll);
+
+/** ====== SITE TYPE LOGIC ====== **/
+siteTypeEl.addEventListener("change", () => {
+  structuresEl.innerHTML = "";
+  structuresCard.style.display = "none";
+
+  towerWrap.style.display = siteTypeEl.value === "tower" ? "block" : "none";
+  mastWrap.style.display = siteTypeEl.value === "masts" ? "block" : "none";
+
+  if (siteTypeEl.value === "tower") {
+    renderTower();
+  } else if (siteTypeEl.value === "masts") {
+    // wait for mast count selection
+    structuresCard.style.display = "none";
+  }
+});
+
+mastCountEl.addEventListener("change", () => {
+  if (siteTypeEl.value === "masts") renderMasts();
+});
+
+/** ====== RENDER STRUCTURES ====== **/
+function renderTower() {
+  structuresCard.style.display = "block";
+  structuresEl.innerHTML = "";
+  ["Leg 1", "Leg 2", "Leg 3", "Leg 4"].forEach((name) => {
+    structuresEl.appendChild(createStructureBlock(name, false));
+  });
+}
+
+function renderMasts() {
+  const count = Number(mastCountEl.value);
+  if (!count) return;
+
+  structuresCard.style.display = "block";
+  structuresEl.innerHTML = "";
+
+  const names = ["Mast A", "Mast B", "Mast C", "Mast D"];
+  for (let i = 0; i < count; i++) {
+    structuresEl.appendChild(createStructureBlock(names[i], true));
+  }
+}
+
+function createStructureBlock(name, hasLength) {
+  const d = document.createElement("div");
+  d.className = "card block";
+  d.innerHTML = `
+    <div class="pill">${siteTypeEl.value === "tower" ? "Tower" : "Masts"}</div>
+    <h3>${name}</h3>
+
+    ${hasLength ? `
+      <label>Mast Length (m)</label>
+      <input type="number" class="mast-length" inputmode="decimal" placeholder="e.g., 6">
+    ` : ""}
+
+    <div class="block">
+      <h4>Sectors</h4>
+      <div class="inline-actions">
+        <button type="button" class="secondary add-sector">+ Add Sector</button>
+      </div>
+      <div class="sectors"></div>
+    </div>
+
+    <div class="block">
+      <h4>Microwave</h4>
+      <div class="inline-actions">
+        <button type="button" class="secondary add-mw">+ Add MW</button>
+      </div>
+      <div class="mw"></div>
+    </div>
+  `;
+
+  // bind buttons
+  d.querySelector(".add-sector").addEventListener("click", () => addSector(d));
+  d.querySelector(".add-mw").addEventListener("click", () => addMW(d, name));
+
+  return d;
+}
+
+/** ====== ADD / REMOVE: SECTOR ====== **/
+function addSector(structureEl) {
+  const wrap = structureEl.querySelector(".sectors");
+
+  const sector = document.createElement("div");
+  sector.className = "card";
+  sector.innerHTML = `
+    <label>Sector</label>
+    <select class="sector-id">
+      <option value="Sector A">Sector A</option>
+      <option value="Sector B">Sector B</option>
+      <option value="Sector C">Sector C</option>
+      <option value="Sector D">Sector D</option>
+    </select>
+
+    <div class="block">
+      <h4>Antennas</h4>
+      <div class="inline-actions">
+        <button type="button" class="secondary add-antenna">+ Add Antenna</button>
+      </div>
+      <div class="antennas"></div>
+    </div>
+
+    <div class="block">
+      <h4>RRUs</h4>
+      <div class="inline-actions">
+        <button type="button" class="secondary add-rru">+ Add RRU</button>
+      </div>
+      <div class="rrus"></div>
+    </div>
+
+    <div class="inline-actions">
+      <button type="button" class="danger remove-sector">Remove Sector</button>
+    </div>
+  `;
+
+  sector.querySelector(".add-antenna").addEventListener("click", () => addAntenna(sector));
+  sector.querySelector(".add-rru").addEventListener("click", () => addRRU(sector));
+  sector.querySelector(".remove-sector").addEventListener("click", () => sector.remove());
+
+  wrap.appendChild(sector);
+}
+
+/** ====== ADD / REMOVE: ANTENNA ====== **/
+function addAntenna(sectorEl) {
+  const wrap = sectorEl.querySelector(".antennas");
+
+  const a = document.createElement("div");
+  a.className = "card";
+  a.innerHTML = `
+    <label>Antenna Type</label>
+    <select class="antenna-type">
+      ${ANTENNA_TYPES.map(t => `<option value="${t}">${t}</option>`).join("")}
+    </select>
+
+    <label>Height (m)</label>
+    <input type="number" class="antenna-height" inputmode="decimal" placeholder="e.g., 6">
+
+    <label>Technology</label>
+    <div class="checkbox-group">
+      <label><input type="checkbox" value="2G"> 2G</label>
+      <label><input type="checkbox" value="3G"> 3G</label>
+      <label><input type="checkbox" value="4G"> 4G</label>
+    </div>
+
+    <div class="inline-actions">
+      <button type="button" class="danger remove-antenna">Remove Antenna</button>
+    </div>
+  `;
+
+  a.querySelector(".remove-antenna").addEventListener("click", () => a.remove());
+  wrap.appendChild(a);
+}
+
+/** ====== ADD / REMOVE: RRU ====== **/
+function addRRU(sectorEl) {
+  const wrap = sectorEl.querySelector(".rrus");
+
+  const r = document.createElement("div");
+  r.className = "card";
+  r.innerHTML = `
+    <label>RRU Model</label>
+    <select class="rru-model">
+      ${RRU_MODELS.map(m => `<option value="${m}">${m}</option>`).join("")}
+    </select>
+
+    <div class="inline-actions">
+      <button type="button" class="danger remove-rru">Remove RRU</button>
+    </div>
+  `;
+
+  r.querySelector(".remove-rru").addEventListener("click", () => r.remove());
+  wrap.appendChild(r);
+}
+
+/** ====== ADD / REMOVE: MW ====== **/
+function addMW(structureEl, locationName) {
+  const wrap = structureEl.querySelector(".mw");
+
+  const m = document.createElement("div");
+  m.className = "card";
+  m.innerHTML = `
+    <div class="small">Installed on: ${locationName}</div>
+
+    <label>Dish Diameter (m)</label>
+    <select class="mw-dia">
+      ${MW_DIAMETERS.map(d => `<option value="${d}">${d}</option>`).join("")}
+    </select>
+
+    <label>Height (m)</label>
+    <input type="number" class="mw-height" inputmode="decimal" placeholder="e.g., 6">
+
+    <div class="inline-actions">
+      <button type="button" class="danger remove-mw">Remove MW</button>
+    </div>
+  `;
+
+  m.querySelector(".remove-mw").addEventListener("click", () => m.remove());
+  wrap.appendChild(m);
+}
+
+/** ====== TEXT GENERATION ====== **/
+function generateText() {
+  const out = [];
+
+  // Header
+  if (siteTypeEl.value === "tower") {
+    const th = towerHeightEl.value || "?";
+    out.push(`TOWER (${th} m)`);
+  } else if (siteTypeEl.value === "masts") {
+    out.push(`MASTS SITE`);
+  } else {
+    out.push(`SITE`);
+  }
+
+  // For each structure (Leg/Mast)
+  structuresEl.querySelectorAll(":scope > .card").forEach(structure => {
+    const titleEl = structure.querySelector("h3");
+    if (!titleEl) return;
+
+    const title = titleEl.innerText.trim();
+    out.push(`\n${title}`);
+
+    // Mast length line (only if exists)
+    const mastLenEl = structure.querySelector(".mast-length");
+    if (mastLenEl) {
+      const ml = mastLenEl.value || "?";
+      out.push(`Mast Length: ${ml} m`);
+    }
+
+    // Sectors
+    const sectorEls = structure.querySelectorAll(":scope .sectors > .card");
+    sectorEls.forEach(sec => {
+      const sectorText = sec.querySelector(".sector-id")?.value || "Sector ?";
+      out.push(`${sectorText}`);
+
+      // Antennas in this sector (each antenna printed once with combined tech)
+      sec.querySelectorAll(":scope .antennas > .card").forEach(a => {
+        const type = a.querySelector(".antenna-type")?.value || "?";
+        const height = a.querySelector(".antenna-height")?.value || "?";
+        const tech = [...a.querySelectorAll('.checkbox-group input[type=checkbox]:checked')]
+          .map(x => x.value)
+          .join("/");
+
+        out.push(`- ${type} @ ${height}m (${tech || "?"})`);
+      });
+
+      // RRUs in this sector
+      sec.querySelectorAll(":scope .rrus > .card").forEach(r => {
+        const model = r.querySelector(".rru-model")?.value || "?";
+        out.push(`- RRU ${model}`);
+      });
+    });
+
+    // MW for this structure
+    structure.querySelectorAll(":scope .mw > .card").forEach(m => {
+      const dia = m.querySelector(".mw-dia")?.value || "?";
+      const h = m.querySelector(".mw-height")?.value || "?";
+      out.push(`MW ${dia}m @ ${h}m`);
+    });
+  });
+
+  outputEl.value = out.join("\n");
+  toast("✅ Text generated");
+}
+
+/** ====== COPY ====== **/
+async function copyText() {
+  const text = outputEl.value || "";
+  if (!text.trim()) {
+    toast("⚠️ Generate text first");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("✅ Copied");
+  } catch (e) {
+    // fallback
+    outputEl.focus();
+    outputEl.select();
+    document.execCommand("copy");
+    toast("✅ Copied (fallback)");
+  }
+}
+
+/** ====== CLEAR ====== **/
+function clearAll() {
+  siteTypeEl.value = "";
+  towerHeightEl.value = "";
+  mastCountEl.value = "";
+  towerWrap.style.display = "none";
+  mastWrap.style.display = "none";
+  structuresEl.innerHTML = "";
+  structuresCard.style.display = "none";
+  outputEl.value = "";
+  toast("🧹 Cleared");
+}
+
+/** ====== TOAST ====== **/
+let toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toastEl.textContent = "", 2000);
+}
+</script>
+
+</body>
+</html>
