@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>نماذج Survey</title>
+
+  <style>
+    :root {
+      --bg:#0b1220;
+      --card:#121b2f;
+      --txt:#eef3ff;
+      --muted:#9fb0d0;
+      --line:#23304f;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,#070b14,#0b1220);
+      color:var(--txt);
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+    }
+
+    .wrap{
+      max-width:900px;
+      width:100%;
+      padding:24px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:6px;
+    }
+
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      margin-bottom:28px;
+      font-size:14px;
+    }
+
+    .grid{
+      display:grid;
+      gap:20px;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:24px;
+      text-align:center;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+      filter:brightness(1.1);
+    }
+
+    .icon{
+      font-size:40px;
+      margin-bottom:12px;
+    }
+
+    .title{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .desc{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .back{
+      display:block;
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+    }
+
+    .back:hover{
+      text-decoration:underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrap">
+    <h1>نماذج Survey</h1>
+    <div class="sub">اختر النموذج حسب مهمتك بالموقع</div>
+
+    <div class="grid">
+
+      <!-- Survey المهندس -->
+      <div class="card" onclick="location.href='survey-engineer.html'">
+        <div class="icon">🏗️</div>
+        <div class="title">Survey المهندس</div>
+        <div class="desc">
+          أعمال الموقع، الكهرباء، السطح، الكباين، الخدمات
+        </div>
+      </div>
+
+      <!-- Survey الريقر -->
+      <div class="card" onclick="location.href='survey-rigger.html'">
+        <div class="icon">🧗‍♂️</div>
+        <div class="title">Survey الريقر</div>
+        <div class="desc">
+          أنتنيات، RRU، بانوراما، زوايا، تسليح
+        </div>
+      </div>
+
+      <!-- معلومات وموقع السايت -->
+      <div class="card" onclick="location.href='technicians.html'">
+        <div class="icon">📍</div>
+        <div class="title">معلومات وموقع السايت</div>
+        <div class="desc">
+          Location، Access، بيانات عامة، خرائط
+        </div>
+      </div>
+
+    </div>
+
+    <!-- رجوع إلى الصفحة الرئيسية -->
+    <a class="back" href="index.html">
+      ⬅️ الرجوع إلى الصفحة الرئيسية
+    </a>
+  </div>
+
+</body>
+</html>

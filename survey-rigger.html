@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>دليل الريقر - Rigger</title>
+  <style>
+    :root { --bg:#0b1220; --card:#121b2f; --muted:#9fb0d0; --txt:#eef3ff; --ok:#22c55e; --line:#23304f; }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#070b14, #0b1220);color:var(--txt)}
+    .wrap{max-width:980px;margin:0 auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    h1{margin:6px 0;font-size:20px}
+    .sub{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px;align-items:center}
+    button{border:0;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
+    .btn{background:#1b2946;color:var(--txt)}
+    .btn:hover{filter:brightness(1.1)}
+    .btn-danger{background:#3a1b24}
+    .list{margin-top:14px;display:grid;gap:10px}
+    .item{background:rgba(18,27,47,.9);border:1px solid var(--line);border-radius:16px;padding:12px}
+    .row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+    .title{display:flex;gap:10px;align-items:flex-start}
+    .num{width:28px;height:28px;border-radius:10px;background:#1b2946;display:grid;place-items:center;color:var(--muted);font-weight:700;flex:0 0 auto}
+    .name{font-size:15px;margin-top:3px}
+    .meta{color:var(--muted);font-size:12px;margin-top:4px}
+    .controls{display:flex;gap:8px;flex:0 0 auto}
+    .check{background:#16311f;color:#c9f7d7}
+    .check.done{background:rgba(34,197,94,.15);outline:1px solid rgba(34,197,94,.35)}
+    .explain{background:#1b2946}
+    .details{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;color:#dbe6ff}
+    .details ul{margin:8px 0 0 0;padding:0 18px}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#162242;color:var(--muted);font-size:12px;margin-inline-start:6px}
+    .badge-photos{background:#1a2a4a;color:#cfe1ff}
+    .doneText{color:var(--ok);font-weight:700;margin-right:8px}
+    .search{width:min(420px,100%);background:#0e162a;border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--txt)}
+    .back-hub{
+  display:inline-block;
+  margin-bottom:12px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:#1b2946;
+  color:#eef3ff;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  transition:0.2s;
+}
+.back-hub:hover{
+  background:#24365f;
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a href="survey-hub.html" class="back-hub">⬅️ الرجوع إلى Survey Hub</a>
+
+      <div>
+        <h1>دليل الريقر — Rigger</h1>
+        <div class="sub">اختر النقطة، اعمل ✅ تم، واضغط ℹ️ شرح لعرض التفاصيل.</div>
+      </div>
+      <div class="actions">
+        <input id="q" class="search" placeholder="ابحث عن نقطة… مثل: أنتينا / كافاريج / جنابر / بانوراما / RRU" />
+        <button class="btn btn-danger" id="reset">مسح العلامات</button>
+      </div>
+    </header>
+
+    <div class="list" id="list"></div>
+  </div>
+
+  <script>
+    // imagesRequired: رقم أو نص (حسب العدد/الحالة)
+    const POINTS = [
+      {
+        title: "الأنتينات",
+        imagesRequired: "حسب عدد الأنتينات",
+        imagesNote: "لكل أنتينا: تسليح + ميكانيكل عند جهة التسليح + Angles + Clamps",
+        meta: "تصوير جميع الأنتينات بدون استثناء مع تفاصيل التسليح والملحقات.",
+        details: [
+          "تصوير جميع الأنتينات الموجودة في السايت بدون استثناء.",
+          "تحديد التسليح لكل أنتينا بشكل واضح.",
+          "تصوير الميكانيكل لكل أنتينا عند جهة التسليح.",
+          "تصوير الأنكلز (Angles) وذكرها بالجدول بالإضافة إلى الصور.",
+          "تصوير الكلّمش (Clamps) الخاصة بكل أنتينا بشكل واضح."
+        ]
+      },
+      {
+        title: "فيو الأنتينا (الكافاريج)",
+        imagesRequired: "حسب عدد الأنتينات",
+        imagesNote: "صورة/صور دقيقة لكل أنتينا: طرف واضح + كافاريج + ميكانيكال تيلت",
+        meta: "صور دقيقة جدًا للكافاريج مع وضوح طرف الأنتينا والميكانيكال تيلت.",
+        details: [
+          "تصوير فيو الأنتينا بحيث يكون دقيق جدًا جدًا.",
+          "يجب أن يكون طرف الأنتينا واضح بالصورة.",
+          "الجزء الأكبر من الصورة يجب أن يبيّن الكافاريج.",
+          "توضيح الميكانيكال تيلت لكل أنتينا بشكل واضح."
+        ]
+      },
+      {
+        title: "الجنابر",
+        imagesRequired: "حسب عدد السيكتورات",
+        imagesNote: "لكل سيكتور: تصوير من الأنتينا إلى الراديو + تحديد نوع الجناير بكل جهة",
+        meta: "تصوير الجنابر لكل سيكتور من الأنتينا إلى الراديو.",
+        details: [
+          "تصوير الجنابر لكل سيكتور.",
+          "التصوير من الأنتينا إلى الراديو لكل سيكتور.",
+          "ذكر نوع الجناير في كل جهة بشكل واضح ومحدد."
+        ]
+      },
+      {
+        title: "بانوراما من فوق – 12 صورة",
+        imagesRequired: 12,
+        meta: "بانوراما 360° من أعلى البرج/الماست (12 صورة كاملة).",
+        details: [
+          "تصوير بانوراما من أعلى البرج أو الماست.",
+          "عدد الصور 12 صورة كاملة.",
+          "تغطية الزاوية كاملة حتى 360 درجة.",
+          "تحديد اتجاه الشمال قبل التصوير.",
+          "التصوير يكون على شكل كردور صور متسلسل."
+        ]
+      },
+      {
+        title: "صورة الشمال",
+        imagesRequired: 1,
+        meta: "صورة مستقلة وواضحة لتحديد اتجاه الشمال.",
+        details: [
+          "صورة مستقلة وواضحة لتحديد اتجاه الشمال."
+        ]
+      },
+      {
+        title: "تحديد زوايا الأنتينات وارتفاعاتها",
+        imagesRequired: 0,
+        meta: "قياسات دقيقة جدًا بدون تقريب (زوايا + ارتفاعات).",
+        details: [
+          "تحديد زاوية كل أنتينا بشكل دقيق جدًا.",
+          "تحديد ارتفاع كل أنتينا عن السطح أو المرجع المعتمد.",
+          "ذكر جميع القيم بدون أي تقريب أو تقدير عشوائي."
+        ]
+      },
+      {
+        title: "RRU",
+        imagesRequired: "حسب عدد الـ RRU",
+        imagesNote: "صورة مستقلة لكل RRU + ليبل واضح + حساب أطوال الكوابل بدقة (+10% لكل سيكتور)",
+        meta: "توثيق كل RRU بالليبل + حساب أطوال الكوابل بدقة عالية.",
+        details: [
+          "تصوير صورة مستقلة لكل RRU.",
+          "الليبل الخاص بكل RRU يجب أن يكون واضح ومقروء.",
+          "حساب أطوال الكوابل بشكل دقيق جدًا.",
+          "إضافة 10% زيادة طول لكل سيكتور تحسّبًا لأي مشاكل أثناء التركيب."
+        ]
+      },
+      {
+        title: "موقع الـ DP والحاجة المستقبلية",
+        imagesRequired: 1,
+        imagesNote: "صورة توضح موقع الـ DP (وإذا غير موجود: صورة للمكان المقترح)",
+        meta: "تحديد مكان DP وهل سنحتاجه مستقبلًا مع توضيح.",
+        details: [
+          "تحديد موقع الـ DP في السايت بشكل واضح.",
+          "ذكر إذا كان سنحتاج الـ DP مستقبلًا أو لا مع التوضيح."
+        ]
+      }
+    ];
+
+    const KEY = "rigger_guide_checks_v1";
+
+    function loadState(){
+      try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
+      catch { return {}; }
+    }
+
+    function saveState(state){
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }
+
+    function photosLabel(value){
+      if (value === 0) return "📷 لا صور إلزامية";
+      if (typeof value === "number") return `📷 ${value} صور`;
+      return `📷 ${value}`;
+    }
+
+    function render(filter=""){
+      const state = loadState();
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      const normalized = filter.trim().toLowerCase();
+
+      POINTS
+        .map((p, idx) => ({...p, id: String(idx+1)}))
+        .filter(p => {
+          if(!normalized) return true;
+          return (p.title + " " + (p.meta||"") + " " + (p.imagesRequired ?? "") + " " + (p.imagesNote||"") + " " + (p.details||[]).join(" "))
+            .toLowerCase()
+            .includes(normalized);
+        })
+        .forEach((p) => {
+          const done = !!state[p.id];
+
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
+            <div class="row">
+              <div class="title">
+                <div class="num">${p.id}</div>
+                <div>
+                  <div class="name">
+                    ${done ? `<span class="doneText">✓</span>` : ""}
+                    ${p.title}
+                    <span class="badge">${done ? "مكتملة" : "غير مكتملة"}</span>
+                    <span class="badge badge-photos">${photosLabel(p.imagesRequired)}</span>
+                  </div>
+                  <div class="meta">
+                    ${p.meta || ""}
+                    ${p.imagesNote ? ` <span class="badge">${p.imagesNote}</span>` : ""}
+                  </div>
+                </div>
+              </div>
+              <div class="controls">
+                <button class="check ${done ? "done" : ""}" data-id="${p.id}">
+                  ${done ? "إلغاء" : "تم"}
+                </button>
+                <button class="explain btn" data-toggle="${p.id}">شرح</button>
+              </div>
+            </div>
+
+            <div class="details" id="d-${p.id}">
+              <strong>تفاصيل النقطة:</strong>
+              <ul>
+                ${(p.details||[]).map(x => `<li>${x}</li>`).join("")}
+              </ul>
+            </div>
+          `;
+
+          list.appendChild(item);
+        });
+
+      // events
+      list.querySelectorAll(".check").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          const state = loadState();
+          state[id] = !state[id];
+          saveState(state);
+          render(document.getElementById("q").value);
+        });
+      });
+
+      list.querySelectorAll(".explain").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-toggle");
+          const box = document.getElementById("d-" + id);
+          box.style.display = (box.style.display === "block") ? "none" : "block";
+        });
+      });
+    }
+
+    document.getElementById("q").addEventListener("input", (e) => {
+      render(e.target.value);
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      localStorage.removeItem(KEY);
+      render(document.getElementById("q").value);
+    });
+
+    render();
+  </script>
+</body>
+</html>
