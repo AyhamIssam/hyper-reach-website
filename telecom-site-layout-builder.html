@@ -105,23 +105,20 @@
     margin-bottom:8px;
   }
   .back-hub{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-bottom:14px;
-  padding:10px 16px;
-  border-radius:14px;
-  background:#1e293b;
-  color:#e5e7eb;
-  text-decoration:none;
-  font-size:14px;
-  font-weight:600;
-  border:1px solid #334155;
-}
-
-.back-hub:hover{
-  background:#334155;
-}
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:14px;
+    padding:10px 16px;
+    border-radius:14px;
+    background:#1e293b;
+    color:#e5e7eb;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    border:1px solid #334155;
+  }
+  .back-hub:hover{ background:#334155; }
 </style>
 </head>
 
@@ -299,12 +296,14 @@ function addSector(structureEl) {
   sector.className = "card";
   sector.innerHTML = `
     <label>Sector</label>
-    <select class="sector-id">
-      <option value="Sector A">Sector A</option>
-      <option value="Sector B">Sector B</option>
-      <option value="Sector C">Sector C</option>
-      <option value="Sector D">Sector D</option>
-    </select>
+    <input class="sector-id" list="sectorList" placeholder="Type or pick (e.g., Sector A)">
+
+    <datalist id="sectorList">
+      <option value="Sector A"></option>
+      <option value="Sector B"></option>
+      <option value="Sector C"></option>
+      <option value="Sector D"></option>
+    </datalist>
 
     <div class="block">
       <h4>Antennas</h4>
@@ -342,9 +341,11 @@ function addAntenna(sectorEl) {
   a.className = "card";
   a.innerHTML = `
     <label>Antenna Type</label>
-    <select class="antenna-type">
-      ${ANTENNA_TYPES.map(t => `<option value="${t}">${t}</option>`).join("")}
-    </select>
+    <input class="antenna-type" list="antennaTypeList" placeholder="Type or pick">
+
+    <datalist id="antennaTypeList">
+      ${ANTENNA_TYPES.map(t => `<option value="${t}"></option>`).join("")}
+    </datalist>
 
     <label>Height (m)</label>
     <input type="number" class="antenna-height" inputmode="decimal" placeholder="e.g., 6">
@@ -373,9 +374,11 @@ function addRRU(sectorEl) {
   r.className = "card";
   r.innerHTML = `
     <label>RRU Model</label>
-    <select class="rru-model">
-      ${RRU_MODELS.map(m => `<option value="${m}">${m}</option>`).join("")}
-    </select>
+    <input class="rru-model" list="rruModelList" placeholder="Type or pick">
+
+    <datalist id="rruModelList">
+      ${RRU_MODELS.map(m => `<option value="${m}"></option>`).join("")}
+    </datalist>
 
     <div class="inline-actions">
       <button type="button" class="danger remove-rru">Remove RRU</button>
@@ -396,9 +399,11 @@ function addMW(structureEl, locationName) {
     <div class="small">Installed on: ${locationName}</div>
 
     <label>Dish Diameter (m)</label>
-    <select class="mw-dia">
-      ${MW_DIAMETERS.map(d => `<option value="${d}">${d}</option>`).join("")}
-    </select>
+    <input class="mw-dia" list="mwDiaList" placeholder="Type or pick (e.g., 0.6)">
+
+    <datalist id="mwDiaList">
+      ${MW_DIAMETERS.map(d => `<option value="${d}"></option>`).join("")}
+    </datalist>
 
     <label>Height (m)</label>
     <input type="number" class="mw-height" inputmode="decimal" placeholder="e.g., 6">
