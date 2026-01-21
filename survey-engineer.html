@@ -1,486 +1,113 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>دليل مهندس الموقع - Survey</title>
-  <style>
-    :root { --bg:#0b1220; --card:#121b2f; --muted:#9fb0d0; --txt:#eef3ff; --ok:#22c55e; --line:#23304f; }
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#070b14, #0b1220);color:var(--txt)}
-    .wrap{max-width:980px;margin:0 auto;padding:20px}
-    header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    h1{margin:6px 0;font-size:20px}
-    .sub{color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:8px;align-items:center}
-    button{border:0;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:600}
-    .btn{background:#1b2946;color:var(--txt)}
-    .btn:hover{filter:brightness(1.1)}
-    .btn-danger{background:#3a1b24}
-    .list{margin-top:14px;display:grid;gap:10px}
-    .item{background:rgba(18,27,47,.9);border:1px solid var(--line);border-radius:16px;padding:12px}
-    .row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-    .title{display:flex;gap:10px;align-items:flex-start}
-    .num{width:28px;height:28px;border-radius:10px;background:#1b2946;display:grid;place-items:center;color:var(--muted);font-weight:700;flex:0 0 auto}
-    .name{font-size:15px;margin-top:3px}
-    .meta{color:var(--muted);font-size:12px;margin-top:4px}
-    .controls{display:flex;gap:8px;flex:0 0 auto}
-    .check{background:#16311f;color:#c9f7d7}
-    .check.done{background:rgba(34,197,94,.15);outline:1px solid rgba(34,197,94,.35)}
-    .explain{background:#1b2946}
-    .details{display:none;margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;color:#dbe6ff}
-    .details ul{margin:8px 0 0 0;padding:0 18px}
-    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#162242;color:var(--muted);font-size:12px;margin-inline-start:6px}
-    .badge-photos{background:#1a2a4a;color:#cfe1ff}
-    .doneText{color:var(--ok);font-weight:700;margin-right:8px}
-    .search{width:min(420px,100%);background:#0e162a;border:1px solid var(--line);border-radius:14px;padding:10px 12px;color:var(--txt)}
-    .back-hub{
-  display:inline-block;
-  margin-bottom:12px;
-  padding:8px 14px;
-  border-radius:999px;
-  background:#1b2946;
-  color:#eef3ff;
-  text-decoration:none;
-  font-size:13px;
-  font-weight:600;
-  transition:0.2s;
-}
-.back-hub:hover{
-  background:#24365f;
-}
+  <title>Choose Site Type</title>
 
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#121b2f;
+      --line:#23304f;
+      --text:#eef3ff;
+      --muted:#9fb0d0;
+      --primary:#3b82f6;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:linear-gradient(180deg,#070b14,#0b1220);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .container{
+      width:100%;
+      max-width:420px;
+      padding:20px;
+    }
+
+    .box{
+      background:rgba(18,27,47,.95);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:28px 22px;
+      text-align:center;
+    }
+
+    h1{
+      margin:0 0 6px 0;
+      font-size:22px;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:26px;
+    }
+
+    /* ===== FIX HERE ===== */
+    .buttons{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      margin-bottom:22px;
+    }
+
+    .btn{
+      flex:1;
+      padding:16px 0;
+      border-radius:18px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:16px;
+      color:#fff;
+      background:linear-gradient(135deg,#2563eb,#3b82f6);
+      transition:.2s;
+      text-align:center;
+    }
+
+    .btn:hover{
+      filter:brightness(1.1);
+      transform:translateY(-1px);
+    }
+    /* =================== */
+
+    .back{
+      display:inline-block;
+      font-size:13px;
+      color:var(--muted);
+      text-decoration:none;
+    }
+
+    .back:hover{
+      color:#fff;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <a href="survey-hub.html" class="back-hub">⬅️ الرجوع إلى Survey Hub</a>
-
-      <div>
-        <h1>دليل مهندس الموقع — Survey</h1>
-        <div class="sub">اختر النقطة، اعمل ✅ تم، واضغط ℹ️ شرح لعرض التفاصيل.</div>
+  <div class="container">
+    <div class="box">
+      <h1>Choose Site Type</h1>
+      <div class="sub">
+        Select the survey page
       </div>
-      <div class="actions">
-        <input id="q" class="search" placeholder="ابحث عن نقطة… مثل: عداد / كيبل / روف / تاور" />
-        <button class="btn btn-danger" id="reset">مسح العلامات</button>
-      </div>
-    </header>
 
-    <div class="list" id="list"></div>
+      <div class="buttons">
+        <a href="outdoor.html" class="btn">Outdoor</a>
+        <a href="indoor.html" class="btn">Indoor</a>
+      </div>
+
+      <a href="survey-hub.html" class="back">
+        ← Back to Survey Hub
+      </a>
+    </div>
   </div>
-
-  <script>
-    // عدّل/أضف النقاط من هون
-    // imagesRequired يمكن أن تكون رقم أو نص (مثل: "حسب عدد السيكتورات")
-    const POINTS = [
-      {
-        title: "صور أكسيس + ليبل السايت",
-        imagesRequired: 9, // تقدير حد أدنى بناءً على البنود المذكورة
-        imagesNote: "تقريبًا: 4 للـGreen Field + 1 باب رئيسي + 2 درج + 1 باب درج علوي + 1 Access Field",
-        meta: "صور أكسيس + ليبل واضح للسايت والكود.",
-        details: [
-          "صور أكسيس للعمارة أو الشيك (Site / Shelter / Building) إذا كانت Green Field من جميع الجهات. (يفضل 4 جهات)",
-          "صور للباب الرئيسي.",
-          "صور للدرج من تحت لفوق. (يفضل لقطتين على الأقل: بداية/نهاية)",
-          "صور لباب الدرج العلوي المؤدي إلى السطح.",
-          "صورة Access Field للسايت من تحت أو فوق، مع اسم السايت وكوده واضحين على الصورة."
-        ]
-      },
-      {
-        title: "الكرين",
-        imagesRequired: 4, // حد أدنى (زوايا متعددة)
-        imagesNote: "يفضل 4 زوايا/اتجاهات",
-        meta: "تصوير مكان وقوف الكرين بجميع الحالات.",
-        details: [
-          "تصوير مكان وقوف الكرين بجميع الحالات.",
-          "حتى لو ما كان مطلوب كرين حاليًا، يجب تصوير المكان تحسّبًا لأي استخدام مستقبلي."
-        ]
-      },
-      {
-        title: "عداد الكهرباء",
-        imagesRequired: 5,
-        imagesNote: "من تحت + القراءات + القواطع + الكيبل + صورة عامة من بعيد",
-        meta: "توثيق كامل للعداد والقراءات والكيابل.",
-        details: [
-          "صور عداد الكهرباء من تحت.",
-          "تحديد عدد الفازات (1 فاز أو 3 فاز).",
-          "تصوير القراءات.",
-          "تصوير القواطع.",
-          "تصوير الكيبل المشبوك على العداد.",
-          "تحديد كم حمّله الكيبل.",
-          "تحديد طول الكيبل التقريبي بالمتر.",
-          "صورة عامة للعداد من بعيد توضح مكانه بالنسبة للسايت."
-        ]
-      },
-      {
-        title: "الروف (إذا موجود)",
-        imagesRequired: 1,
-        imagesNote: "صورة توضح وسيلة الصعود/الأمان",
-        meta: "توثيق طريقة الوصول للروف وتقييم الأمان.",
-        details: [
-          "إذا كان هناك روف على السطح:",
-          "تصوير طريقة الرفع للأعلى.",
-          "تحديد إذا كانت آمنة أو غير آمنة (درج – وسيلة صعود)."
-        ]
-      },
-      {
-        title: "السطح – 6 صور",
-        imagesRequired: 6,
-        meta: "ست صور إلزامية لتوثيق كامل السطح.",
-        details: [
-          "تصوير السطح كامل من الأعلى.",
-          "تصوير جميع أنواع الأسطح الموجودة.",
-          "تصوير كل شيء موجود فوق الأرض بدون استثناء."
-        ]
-      },
-      {
-        title: "صور الشيلتر",
-        imagesRequired: 7,
-        imagesNote: "4 جهات + باب بعيد + باب مفتوح + باب مسكّر",
-        meta: "توثيق الشيلتر/الكبينة من الخارج والباب.",
-        details: [
-          "صور الشيلتر أو كبينة الأوتدور من جميع الجهات. (يفضل 4 جهات)",
-          "صورة الباب من بعيد.",
-          "صورة الباب وهو مفتوح.",
-          "صورة الباب وهو مسكّر.",
-          "ينطبق ذلك على الكبينة والشيلتر."
-        ]
-      },
-      {
-        title: "الكوابل",
-        imagesRequired: 2,
-        meta: "توثيق الإنترتي بورت من الداخل والخارج.",
-        details: [
-          "صور الإنترتي بورت من الخارج.",
-          "صور الإنترتي بورت من الداخل.",
-          "تحديد إذا كان يوجد مكان لإدخال كوابل جديدة عند التركيب."
-        ]
-      },
-      {
-        title: "كيبل تراي",
-        imagesRequired: 3, // "أكثر من صورة" => حد أدنى 3
-        imagesNote: "على الأقل 3 صور (مسار كامل + تفاصيل + نهاية عند الكبينة)",
-        meta: "صور شاملة + تقييم الحالة + طول دقيق حتى الكبينة.",
-        details: [
-          "صور الكيبل تراي كامل سواء على السطح أو الأوتدور.",
-          "تحديد حالة الكيبل تراي (جيدة أو لا).",
-          "أخذ أكثر من صورة للكيبل تراي.",
-          "ذكر إذا كان بحاجة غطاء.",
-          "تحديد طول الكيبل تراي المطلوب بدقة شديدة جدًا حتى الوصول إلى الكبينة."
-        ]
-      },
-      {
-        title: "صور ليقات التاور أو الماستات (ضروري جدًا الوضوح)",
-        imagesRequired: 8, // حد أدنى تقريبي (قد يزيد حسب الحالة)
-        imagesNote: "قد يزيد حسب وجود تاور/عدد الماستات",
-        meta: "توثيق الماستات/التاور والمسافات والـ Legs بوضوح عالي.",
-        details: [
-          "صور المسافات من بعيد. (يفضل لقطتين على الأقل)",
-          "تحديد كم ماست موجود على السطح.",
-          "في حالة وجود تاور: صور التاور من جميع الجهات. (يفضل 4 جهات)",
-          "صور واضحة تبين ما هو المركّب عليه بشكل عام.",
-          "تصوير Legs التاور أو الماست.",
-          "تحديد إذا كان الماست مركب Leg أو Mast بشكل واضح.",
-          "ذكر جميع التفاصيل كاملة."
-        ]
-      },
-      {
-        title: "صور قاعدة البرج",
-        imagesRequired: 3,
-        imagesNote: "من أكثر من زاوية",
-        meta: "تصوير قاعدة البرج بوضوح عالي.",
-        details: [
-          "تصوير قاعدة البرج بشكل واضح ومن أكثر من زاوية."
-        ]
-      },
-      {
-        title: "الريكتيفاير",
-        imagesRequired: 6,
-        imagesNote: "مغلق + مفتوح + القواطع + BLVD + LLVD",
-        meta: "توثيق الريكتيفاير والقواطع وBLVD/LLVD.",
-        details: [
-          "صور الريكتيفاير وهو مسكّر.",
-          "صور الريكتيفاير وهو مفتوح.",
-          "ذكر وتصوير جميع القواطع الموجودة بالتفصيل.",
-          "تحديد وتصوير: BLVD",
-          "تحديد وتصوير: LLVD"
-        ]
-      },
-      {
-        title: "الباسبار",
-        imagesRequired: 2,
-        imagesNote: "قد تكون 1 فقط إذا الموقع Outdoor فقط",
-        meta: "توثيق الباسبار الأوتدور والداخلي (إذا إندور).",
-        details: [
-          "صور الباسبار الأوتدور.",
-          "صور الباسبار الداخلية في حالة السايتات الإندور."
-        ]
-      },
-      {
-        title: "الكباين",
-        imagesRequired: 3,
-        imagesNote: "اسم/موديل/رسمة الباب (وقد تزيد حسب التفاصيل)",
-        meta: "توثيق معلومات الكبينة والـ LLVD/BLVD.",
-        details: [
-          "ذكر اسم الكبينة.",
-          "تصوير الموديل.",
-          "تصوير الرسمة الموجودة على باب الكبينة.",
-          "تحديد: LLVD",
-          "تحديد: BLVD"
-        ]
-      },
-      {
-        title: "البطاريات",
-        imagesRequired: 2,
-        meta: "صورة عامة + صورة قريبة مع الموديل/العدد.",
-        details: [
-          "صور البطاريات من بعيد (صورة عامة).",
-          "صور البطاريات من قريب.",
-          "تحديد عدد البطاريات.",
-          "ذكر موديل البطاريات الموجود عليها."
-        ]
-      },
-      {
-        title: "بوكس الألارم (إذا موجود)",
-        imagesRequired: 3,
-        meta: "مغلق + مفتوح + تفاصيل داخلية واضحة.",
-        details: [
-          "صور بوكس الألارم وهو مسكّر.",
-          "صور بوكس الألارم وهو مفتوح.",
-          "صور واضحة للداخل مع التفاصيل."
-        ]
-      },
-      {
-        title: "الموديكات",
-        imagesRequired: 3,
-        imagesNote: "قد تزيد حسب عدد المودمات",
-        meta: "صور جميع المودمات + البايسات من بعيد وقريب.",
-        details: [
-          "صور جميع المودمات.",
-          "صور البايسات من بعيد ومن قريب."
-        ]
-      },
-      {
-        title: "الراك",
-        imagesRequired: 4,
-        imagesNote: "صورة كاملة + تفاصيل المركّب عليه",
-        meta: "توثيق الراك وكل ما هو مركّب عليه.",
-        details: [
-          "صور الراك كامل.",
-          "توضيح كل ما هو مركّب عليه في حالة الإندور مثل:",
-          "Fuse Panel",
-          "Modems",
-          "BBU",
-          "أو أي قطعة أخرى موجودة."
-        ]
-      },
-      {
-        title: "موقع الكبينة الجديدة",
-        imagesRequired: 8,
-        imagesNote: "قد تزيد حسب مساحة الموقع وعدد الاحتمالات",
-        meta: "توثيق كامل للداخل وتحديد مكان الكبينة الجديدة.",
-        details: [
-          "صور عامة للسايت من الداخل من جميع الجهات. (يفضل 4 جهات)",
-          "تصوير الأرضية، السقف، الجدران… بشكل عمودي وبأنواعه.",
-          "تحديد مكان تركيب الكبينة الجديدة.",
-          "إعطاء أكثر من احتمال في حال وجود مساحة كافية."
-        ]
-      },
-      {
-        title: "فايبر بوكس",
-        imagesRequired: 2,
-        imagesNote: "مكان التركيب + الفايبر بوكس نفسه إذا موجود",
-        meta: "توثيق مكان التركيب والفايبر بوكس إن وُجد.",
-        details: [
-          "صور مكان تركيب الفايبر بوكس سواء بالشيلد أو الأوتدور.",
-          "صورة للفايبر بوكس نفسه إذا كان موجود."
-        ]
-      },
-      {
-        title: "الشيلتر من الداخل",
-        imagesRequired: 9,
-        imagesNote: "باب داخلي + مسار + 360° + جدران تحت/فوق",
-        meta: "توثيق داخلي 360° من الإنترتي بورت حتى مكان الكبينة.",
-        details: [
-          "صورة الباب الداخلي في حالة الإندور.",
-          "صور كاملة وواضحة من الإنترتي بورت حتى مكان تركيب الكبينة. (يفضل لقطتين على الأقل لمسار واضح)",
-          "صور داخلية للشيلتر 360 درجة. (يفضل 4 اتجاهات)",
-          "تصوير الجدران من تحت وفوق. (يفضل صورتين)"
-        ]
-      },
-      {
-        title: "صورة الـ AC Conditions",
-        imagesRequired: 2,
-        imagesNote: "قد تزيد حسب عدد المكيفات",
-        meta: "توثيق حالة المكيفات ووضعها التشغيلي.",
-        details: [
-          "تصوير حالة المكيفات وتوضيح وضعها التشغيلي."
-        ]
-      },
-      {
-        title: "DCDU",
-        imagesRequired: 5,
-        imagesNote: "قد تزيد حسب عدد الـDCDUs والفيوزات",
-        meta: "توثيق DCDUs والقواطع والأحمال والفيوزات.",
-        details: [
-          "صور واضحة لجميع الـ DCDUs الموجودة بالموقع.",
-          "تحديد القواطع الموجودة عليها.",
-          "ذكر وتصوير شو موصّل عليها كحمل.",
-          "تصوير وذكر الفيوزات الموجودة بالتفصيل."
-        ]
-      },
-      {
-        title: "رسمة السطح",
-        imagesRequired: 1,
-        meta: "تصوير الرسمة بعد رسمها وتوثيق الأطوال.",
-        details: [
-          "رسم جميع ما هو موجود على السطح.",
-          "حساب الأطوال بشكل دقيق.",
-          "التقاط صورة واضحة للرسمة النهائية."
-        ]
-      },
-      {
-        title: "أطوال الكيابل المطلوبة للسايت",
-        imagesRequired: 0,
-        meta: "بند بيانات/قياسات (لا يتطلب صور إلزاميًا).",
-        details: [
-          "تحديد أطوال الكيابل بالضبط.",
-          "زيادة طول لكل سيكتور بمقدار 10% درءًا للمشاكل عند التركيب.",
-          "ذكر ارتفاع البناية.",
-          "ذكر ارتفاع الروف إذا كان موجود.",
-          "تحديد مكان وجود الشيلد والكباين على السطح."
-        ]
-      },
-      {
-        title: "معلومات إضافية ضرورية",
-        imagesRequired: "حسب عدد السيكتورات (2 × عدد السيكتورات) + صور إضافية حسب الحالة",
-        meta: "بيانات وصول + صور لكل سيكتور + سيفيل/بلوكيج + توثيق مشاكل.",
-        details: [
-          "أخذ اسم صاحب الموقع ورقم هاتفه (Access).",
-          "تحديد هل هو متواجد دائمًا أو يحتاج تنسيق مسبق.",
-          "صور لكل سيكتور من بعيد ومن قريب. (لكل سيكتور صورتان: بعيد + قريب)",
-          "توضيح التكنولوجيا الموجودة في السايت.",
-          "عدم خلط الصور والداتا عند الإرسال على الواتساب.",
-          "تعبئة ورق الباور كامل.",
-          "ذكر جميع مشاكل السيفيل.",
-          "Blockage (مهم جدًا).",
-          "الحاجة إلى New MRC Bracket for RRH.",
-          "التحقق من أن ARM of DB كافي لتركيب RRHs مع RMC."
-        ]
-      },
-      {
-        title: "المتابعة",
-        imagesRequired: 0,
-        meta: "متابعة يومية لحل جميع مشاكل الموقع بدون تأخير.",
-        details: [
-          "المتابعة يوميًا لحل جميع مشاكل الموقع بدون تأخير."
-        ]
-      }
-    ];
-
-    const KEY = "survey_guide_checks_v1";
-
-    function loadState(){
-      try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
-      catch { return {}; }
-    }
-
-    function saveState(state){
-      localStorage.setItem(KEY, JSON.stringify(state));
-    }
-
-    function photosLabel(value){
-      if (value === 0) return "📷 لا صور إلزامية";
-      if (typeof value === "number") return `📷 ${value} صور`;
-      return `📷 ${value}`;
-    }
-
-    function render(filter=""){
-      const state = loadState();
-      const list = document.getElementById("list");
-      list.innerHTML = "";
-
-      const normalized = filter.trim().toLowerCase();
-
-      POINTS
-        .map((p, idx) => ({...p, id: String(idx+1)}))
-        .filter(p => {
-          if(!normalized) return true;
-          return (p.title + " " + (p.meta||"") + " " + (p.imagesRequired ?? "") + " " + (p.imagesNote||"") + " " + (p.details||[]).join(" "))
-            .toLowerCase()
-            .includes(normalized);
-        })
-        .forEach((p) => {
-          const done = !!state[p.id];
-
-          const item = document.createElement("div");
-          item.className = "item";
-          item.innerHTML = `
-            <div class="row">
-              <div class="title">
-                <div class="num">${p.id}</div>
-                <div>
-                  <div class="name">
-                    ${done ? `<span class="doneText">✓</span>` : ""}
-                    ${p.title}
-                    <span class="badge">${done ? "مكتملة" : "غير مكتملة"}</span>
-                    <span class="badge badge-photos">${photosLabel(p.imagesRequired)}</span>
-                  </div>
-                  <div class="meta">
-                    ${p.meta || ""}
-                    ${p.imagesNote ? ` <span class="badge">${p.imagesNote}</span>` : ""}
-                  </div>
-                </div>
-              </div>
-              <div class="controls">
-                <button class="check ${done ? "done" : ""}" data-id="${p.id}">
-                  ${done ? "إلغاء" : "تم"}
-                </button>
-                <button class="explain btn" data-toggle="${p.id}">شرح</button>
-              </div>
-            </div>
-
-            <div class="details" id="d-${p.id}">
-              <strong>تفاصيل النقطة:</strong>
-              <ul>
-                ${(p.details||[]).map(x => `<li>${x}</li>`).join("")}
-              </ul>
-            </div>
-          `;
-
-          list.appendChild(item);
-        });
-
-      // events
-      list.querySelectorAll(".check").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          const state = loadState();
-          state[id] = !state[id];
-          saveState(state);
-          render(document.getElementById("q").value);
-        });
-      });
-
-      list.querySelectorAll(".explain").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-toggle");
-          const box = document.getElementById("d-" + id);
-          box.style.display = (box.style.display === "block") ? "none" : "block";
-        });
-      });
-    }
-
-    document.getElementById("q").addEventListener("input", (e) => {
-      render(e.target.value);
-    });
-
-    document.getElementById("reset").addEventListener("click", () => {
-      localStorage.removeItem(KEY);
-      render(document.getElementById("q").value);
-    });
-
-    render();
-  </script>
 </body>
 </html>
