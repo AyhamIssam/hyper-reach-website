@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>WhatsApp Photo Sorter</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+</head>
+<body style="font-family: Arial; max-width: 700px; margin: 40px auto; line-height: 1.8;">
+  <h2>منظم صور واتساب - بدون AI</h2>
+
+  <input type="file" id="zipInput" accept=".zip" />
+  <br><br>
+
+  <button onclick="processZip()">تصنيف الصور وتنزيل ZIP جديد</button>
+
+  <pre id="log" style="background:#f3f3f3; padding:15px; white-space:pre-wrap;"></pre>
+
+<script>
+const IMG_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".heic"];
+
+function log(msg) {
+  document.getElementById("log").textContent += msg + "\n";
+}
+
+function cleanText(s) {
+  return String(s || "")
+    .replace(/\u200e/g, "")
+    .replace(/\u200f/g, "")
+    .trim();
+}
+
+function cleanName(s) {
+  s = cleanText(s);
+  s = s.replace(/[\\/*?:"<>|]/g, "_");
+  s = s.replace(/\s+/g, " ");
+  return s ? s.substring(0, 90) : "بدون_تصنيف";
+}
+
+function isImage(name) {
+  const lower = name.toLowerCase();
+  return IMG_EXTS.some(ext => lower.endsWith(ext));
+}
+
+function getFileName(path) {
+  return path.split("/").pop();
+}
+
+function getLabelFromText(text) {
+  text = cleanText(text);
+
+  text = text.replace(/attached:\s*[^>\n\r]+?\.(jpg|jpeg|png|webp|heic)/ig, "");
+  text = text.replace(/[<>]/g, "");
+  text = text.replace(/https?:\/\/\S+/ig, "");
+  text = text.trim().replace(/^[-–.\s]+|[-–.\s]+$/g, "");
+
+  if (!text) return null;
+
+  const ignored = [
+    "messages and calls are end-to-end encrypted",
+    "created group",
+    "site id:",
+    "site name:",
+    "owner no:",
+    "owner:",
+    "phone:",
+    "location:"
+  ];
+
+  const low = text.toLowerCase();
+  if (ignored.some(x => low.includes(x))) return null;
+
+  return cleanName(text);
+}
+
+function detectSite(chatText, zipName) {
+  let siteId = null;
+  let siteName = null;
+
+  const idMatch = chatText.match(/Site ID:\s*(\d{4,6})/i);
+  if (idMatch) siteId = idMatch[1];
+
+  const nameMatch = chatText.match(/Site Name:\s*([A-Za-z0-9_\-/]+)/i);
+  if (nameMatch) siteName = nameMatch[1];
+
+  if (siteId && siteName) return cleanName(siteId + "_" + siteName);
+  if (siteId) return cleanName(siteId);
+
+  const zipMatch = zipName.match(/\b(\d{4,6})\b/);
+  if (zipMatch) return cleanName(zipMatch[1]);
+
+  return "Unknown_Site";
+}
+
+function parseMessages(chatText) {
+  const lines = chatText.split(/\r?\n/);
+  const messages = [];
+  let current = null;
+
+  const msgRe = /^[\u200e\u200f\s]*\[([^\]]+)\]\s*([^:]+):\s*(.*)$/;
+
+  for (const raw of lines) {
+    const line = cleanText(raw);
+    const m = line.match(msgRe);
+
+    if (m) {
+      if (current) messages.push(current);
+      current = {
+        sender: cleanText(m[2]),
+        text: cleanText(m[3])
+      };
+    } else {
+      if (current) current.text += "\n" + line;
+    }
+  }
+
+  if (current) messages.push(current);
+  return messages;
+}
+
+async function processZip() {
+  document.getElementById("log").textContent = "";
+
+  const input = document.getElementById("zipInput");
+  if (!input.files.length) {
+    alert("اختار ملف ZIP أولاً");
+    return;
+  }
+
+  const file = input.files[0];
+  log("✅ تم اختيار: " + file.name);
+
+  const zip = await JSZip.loadAsync(file);
+  const outZip = new JSZip();
+
+  let chatFile = null;
+  const imageMap = {};
+
+  zip.forEach((path, item) => {
+    if (item.dir) return;
+
+    const name = getFileName(path);
+
+    if (name.toLowerCase().endsWith(".txt")) {
+      chatFile = item;
+    }
+
+    if (isImage(name)) {
+      imageMap[name.toLowerCase()] = item;
+    }
+  });
+
+  const imageCount = Object.keys(imageMap).length;
+  log("🖼️ عدد الصور داخل ZIP: " + imageCount);
+
+  if (!chatFile) {
+    log("❌ ما لقيت ملف الشات TXT داخل ZIP");
+    return;
+  }
+
+  const chatText = await chatFile.async("string");
+  const messages = parseMessages(chatText);
+  const siteFolder = detectSite(chatText, file.name);
+
+  log("📄 عدد الرسائل المقروءة: " + messages.length);
+  log("📍 الموقع: " + siteFolder);
+
+  const attachRe = /attached:\s*([^>\n\r]+?\.(?:jpg|jpeg|png|webp|heic))/ig;
+
+  let currentLabel = "General";
+  let copied = 0;
+  let found = 0;
+
+  for (const msg of messages) {
+    const text = msg.text;
+    const files = [...text.matchAll(attachRe)].map(m => cleanText(m[1]));
+    const label = getLabelFromText(text);
+
+    if (files.length) {
+      found += files.length;
+
+      if (label) {
+        currentLabel = label;
+      }
+
+      for (const filename of files) {
+        const key = getFileName(filename).toLowerCase();
+        const img = imageMap[key];
+
+        if (img) {
+          const data = await img.async("blob");
+          const outPath = `${siteFolder}/${cleanName(currentLabel)}/${getFileName(filename)}`;
+          outZip.file(outPath, data);
+          copied++;
+        }
+      }
+    } else {
+      if (label) {
+        currentLabel = label;
+      }
+    }
+  }
+
+  log("🔎 عدد الصور المكتشفة من الشات: " + found);
+  log("✅ تم تصنيف: " + copied + " صورة");
+
+  if (copied === 0) {
+    log("⚠️ لم يتم التصنيف، سيتم وضع كل الصور في All_Photos");
+    for (const [name, img] of Object.entries(imageMap)) {
+      const data = await img.async("blob");
+      outZip.file(`${siteFolder}/All_Photos/${getFileName(name)}`, data);
+    }
+  }
+
+  log("📦 تجهيز ملف ZIP الناتج...");
+
+  const result = await outZip.generateAsync({ type: "blob" });
+  saveAs(result, "sorted_photos.zip");
+
+  log("✅ تم تنزيل sorted_photos.zip");
+}
+</script>
+</body>
+</html>
