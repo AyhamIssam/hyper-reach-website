@@ -1,26 +1,226 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
-  <title>WhatsApp Photo Sorter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Photo Sorter - Hyper Reach</title>
+  <link rel="icon" type="image/png" href="logo.png">
+
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #eef5ff, #f7fbff);
+      color: #1f2937;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f2f52, #1e5b94);
+      color: white;
+      padding: 34px 20px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+    }
+
+    .logo {
+      width: 86px;
+      background: white;
+      padding: 8px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      margin: 8px 0 6px;
+      font-size: 2.1rem;
+    }
+
+    header p {
+      margin: 0;
+      color: #d8ebff;
+      font-size: 1.05rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 18px;
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.16);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 18px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 34px;
+      box-shadow: 0 18px 45px rgba(15, 47, 82, 0.15);
+      border: 1px solid #dbeafe;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .title h2 {
+      color: #133a63;
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .title p {
+      margin: 0;
+      color: #64748b;
+    }
+
+    .upload-box {
+      border: 2px dashed #3b82f6;
+      border-radius: 20px;
+      background: #eff6ff;
+      padding: 34px 22px;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .upload-box:hover {
+      background: #dbeafe;
+      transform: translateY(-2px);
+    }
+
+    input[type="file"] {
+      background: white;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid #bfdbfe;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    button {
+      margin-top: 22px;
+      border: none;
+      background: linear-gradient(135deg, #133a63, #2563eb);
+      color: white;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(37,99,235,0.32);
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(37,99,235,0.4);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 26px 0;
+    }
+
+    .step {
+      background: #f8fbff;
+      border: 1px solid #dbeafe;
+      border-radius: 16px;
+      padding: 18px;
+      color: #334155;
+    }
+
+    .step strong {
+      color: #133a63;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #dbeafe;
+      padding: 18px;
+      border-radius: 16px;
+      min-height: 170px;
+      white-space: pre-wrap;
+      direction: rtl;
+      text-align: right;
+      overflow: auto;
+    }
+
+    footer {
+      text-align: center;
+      color: #64748b;
+      padding: 25px;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
-<body style="font-family: Arial; max-width: 700px; margin: 40px auto; line-height: 1.8;">
-  <h2>منظم صور واتساب - بدون AI</h2>
 
-  <input type="file" id="zipInput" accept=".zip" />
-  <br><br>
+<body>
+<header>
+  <img src="logo.png" alt="Hyper Reach Logo" class="logo">
+  <h1>WhatsApp Photo Sorter</h1>
+  <p>Upload WhatsApp chat ZIP and download organized survey photos</p>
+  <a href="index.html" class="back-link">← Back to Home</a>
+</header>
 
-  <button onclick="processZip()">تصنيف الصور وتنزيل ZIP جديد</button>
+<main>
+  <div class="card">
+    <div class="title">
+      <h2>Organize Survey Photos</h2>
+      <p>Select the exported WhatsApp ZIP file, then download a sorted ZIP file.</p>
+    </div>
 
-  <pre id="log" style="background:#f3f3f3; padding:15px; white-space:pre-wrap;"></pre>
+    <div class="steps">
+      <div class="step">
+        <strong>1. Export Chat</strong>
+        Export WhatsApp chat with media.
+      </div>
+      <div class="step">
+        <strong>2. Upload ZIP</strong>
+        Choose the ZIP file here.
+      </div>
+      <div class="step">
+        <strong>3. Download Result</strong>
+        Get sorted photos ready to use.
+      </div>
+    </div>
+
+    <div class="upload-box">
+      <input type="file" id="zipInput" accept=".zip" />
+      <br>
+      <button onclick="processZip()">Sort Photos & Download ZIP</button>
+    </div>
+
+    <h3 style="color:#133a63; margin-top:30px;">Processing Log</h3>
+    <pre id="log">Waiting for ZIP file...</pre>
+  </div>
+</main>
+
+<footer>
+  © 2025 Hyper Reach. All rights reserved.
+</footer>
 
 <script>
 const IMG_EXTS = [".jpg", ".jpeg", ".png", ".webp", ".heic"];
 
 function log(msg) {
-  document.getElementById("log").textContent += msg + "\n";
+  const box = document.getElementById("log");
+  if (box.textContent === "Waiting for ZIP file...") box.textContent = "";
+  box.textContent += msg + "\n";
 }
 
 function cleanText(s) {
@@ -48,7 +248,6 @@ function getFileName(path) {
 
 function getLabelFromText(text) {
   text = cleanText(text);
-
   text = text.replace(/attached:\s*[^>\n\r]+?\.(jpg|jpeg|png|webp|heic)/ig, "");
   text = text.replace(/[<>]/g, "");
   text = text.replace(/https?:\/\/\S+/ig, "");
@@ -96,7 +295,6 @@ function parseMessages(chatText) {
   const lines = chatText.split(/\r?\n/);
   const messages = [];
   let current = null;
-
   const msgRe = /^[\u200e\u200f\s]*\[([^\]]+)\]\s*([^:]+):\s*(.*)$/;
 
   for (const raw of lines) {
@@ -123,12 +321,12 @@ async function processZip() {
 
   const input = document.getElementById("zipInput");
   if (!input.files.length) {
-    alert("اختار ملف ZIP أولاً");
+    alert("Please choose a ZIP file first.");
     return;
   }
 
   const file = input.files[0];
-  log("✅ تم اختيار: " + file.name);
+  log("✅ Selected: " + file.name);
 
   const zip = await JSZip.loadAsync(file);
   const outZip = new JSZip();
@@ -138,23 +336,17 @@ async function processZip() {
 
   zip.forEach((path, item) => {
     if (item.dir) return;
-
     const name = getFileName(path);
 
-    if (name.toLowerCase().endsWith(".txt")) {
-      chatFile = item;
-    }
-
-    if (isImage(name)) {
-      imageMap[name.toLowerCase()] = item;
-    }
+    if (name.toLowerCase().endsWith(".txt")) chatFile = item;
+    if (isImage(name)) imageMap[name.toLowerCase()] = item;
   });
 
   const imageCount = Object.keys(imageMap).length;
-  log("🖼️ عدد الصور داخل ZIP: " + imageCount);
+  log("🖼️ Images inside ZIP: " + imageCount);
 
   if (!chatFile) {
-    log("❌ ما لقيت ملف الشات TXT داخل ZIP");
+    log("❌ Chat TXT file was not found inside ZIP.");
     return;
   }
 
@@ -162,8 +354,8 @@ async function processZip() {
   const messages = parseMessages(chatText);
   const siteFolder = detectSite(chatText, file.name);
 
-  log("📄 عدد الرسائل المقروءة: " + messages.length);
-  log("📍 الموقع: " + siteFolder);
+  log("📄 Messages read: " + messages.length);
+  log("📍 Site folder: " + siteFolder);
 
   const attachRe = /attached:\s*([^>\n\r]+?\.(?:jpg|jpeg|png|webp|heic))/ig;
 
@@ -179,9 +371,7 @@ async function processZip() {
     if (files.length) {
       found += files.length;
 
-      if (label) {
-        currentLabel = label;
-      }
+      if (label) currentLabel = label;
 
       for (const filename of files) {
         const key = getFileName(filename).toLowerCase();
@@ -195,29 +385,27 @@ async function processZip() {
         }
       }
     } else {
-      if (label) {
-        currentLabel = label;
-      }
+      if (label) currentLabel = label;
     }
   }
 
-  log("🔎 عدد الصور المكتشفة من الشات: " + found);
-  log("✅ تم تصنيف: " + copied + " صورة");
+  log("🔎 Images detected from chat: " + found);
+  log("✅ Sorted photos: " + copied);
 
   if (copied === 0) {
-    log("⚠️ لم يتم التصنيف، سيتم وضع كل الصور في All_Photos");
+    log("⚠️ Could not classify photos, placing all images in All_Photos.");
     for (const [name, img] of Object.entries(imageMap)) {
       const data = await img.async("blob");
       outZip.file(`${siteFolder}/All_Photos/${getFileName(name)}`, data);
     }
   }
 
-  log("📦 تجهيز ملف ZIP الناتج...");
+  log("📦 Preparing download...");
 
   const result = await outZip.generateAsync({ type: "blob" });
   saveAs(result, "sorted_photos.zip");
 
-  log("✅ تم تنزيل sorted_photos.zip");
+  log("✅ Download completed: sorted_photos.zip");
 }
 </script>
 </body>
